@@ -1,69 +1,76 @@
 #include "sort.h"
+#include <stdio.h>
+#include <stdlib.h>
+
 /**
-* partition_hoare - Lomutu partition scheme for quicksort algorithm
-* @a: Array to sort
-* @l: lowest index of array
-* @h: highest index of array
-* Return: index of pivot
-*/
-
-int partition_hoare(int *a, int l, int h)
+ * partition - finds the partition for the quicksort using the Hoare scheme
+ * @array: array to sort
+ * @lo: lowest index of the partition to sort
+ * @hi: highest index of the partition to sort
+ * @size: size of the array
+ *
+ * Return: index of the partition
+ */
+size_t partition(int *array, ssize_t lo, ssize_t hi, size_t size)
 {
-	int p, li, hi, temp;
-	static int i = 0, size;
+	int swap, pivot;
 
-	if (i == 0)
-		size = h + 1, i++;
-
-	li = l - 0, hi = h + 0, p = a[h];
-	while (a)
+	pivot = array[hi];
+	while (lo <= hi)
 	{
-		li = li - 0;
-		while (a[li] < p)
-			li++;
-		hi = hi - 0;
-		while (a[hi] > p)
+		while (array[lo] < pivot)
+			lo++;
+		while (array[hi] > pivot)
 			hi--;
-		if (li >= hi)
-			return (hi);
-		temp = a[li];
-		a[li] = a[hi];
-		a[hi] = temp;
-		print_array(a, size);
+		if (lo <= hi)
+		{
+			if (lo != hi)
+			{
+				swap = array[lo];
+				array[lo] = array[hi];
+				array[hi] = swap;
+				print_array(array, size);
+			}
+			lo++;
+			hi--;
+		}
 	}
-	temp = a[li];
-	a[li] = a[hi];
-	a[hi] = temp;
 	return (hi);
 }
+
 /**
-* qs - Quicksort recurssive function
-* @a: array to sort
-* @l: lowest index
-* @h: highest index
-*/
-
-void qs(int *a, int l, int h)
+ * quicksort - sorts a partition of an array of integers
+ * @array: array to sort
+ * @lo: lowest index of the partition to sort
+ * @hi: highest index of the partition to sort
+ * @size: size of the array
+ *
+ * Return: void
+ */
+void quicksort(int *array, ssize_t lo, ssize_t hi, size_t size)
 {
-	int p;
+	ssize_t pivot;
 
-	if (l < h)
+	if (lo < hi)
 	{
-		p = partition_hoare(a, l, h);
-		qs(a, l, p - 1);
-		qs(a, p, h);
+		pivot = partition(array, lo, hi, size);
+		quicksort(array, lo, pivot, size);
+		quicksort(array, pivot + 1, hi, size);
+
 	}
 }
 
 /**
-* quick_sort_hoare - quicksort with hoare partition
-* @array: array to sort
-* @size: Size of array
-*/
-
+ * quick_sort_hoare - sorts an array of integers in ascending order using the
+ * Quick sort algorithm
+ * @array: The array to sort
+ * @size: The size of the array
+ *
+ * Return: void
+ */
 void quick_sort_hoare(int *array, size_t size)
 {
 	if (array == NULL || size < 2)
 		return;
-	qs(array, 0, size - 1);
+	quicksort(array, 0, size - 1, size);
 }
